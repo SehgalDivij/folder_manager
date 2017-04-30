@@ -2,7 +2,7 @@ import glob, os, shutil
 from os import walk
 
 # Folder to be managed.
-DIRECTORY_TO_MANAGE = 'C:\\Users\\catch\\Downloads'
+DIRECTORY_TO_MANAGE = 'C:\\Users\\catch\\Downloads\\'
 
 # Destination folders for each extension
 DIRS = {
@@ -18,7 +18,15 @@ DIRS = {
 	'ISO Images': ('iso',),
 	'Logs': ('log',),
 	'Linux Repos': ('repo',),
-	'Random': ('cfg', 'json', 'csv', 'in', 'tgn')
+	'Random': ('cfg', 'json', 'csv', 'in', 'tgn'),
+	'Documents\\PDF': ('pdf', ),
+	'Documents\\WordDocuments': ('doc', 'docx'),
+	'Documents\\Presentations': ('pps', 'ppt', 'pptx'),
+	'Documents\\Spreadsheets': ('xlsx', 'xls'),
+	'Programs\\Windows Executables': ('exe', 'bat'),
+	'Programs\\Windows Application': ('msi',),
+	'Programs\\Python': ('py', 'pyc', 'whl'),
+	'Programs\\Others':('',)
 }
 
 def pre_manage():
@@ -32,7 +40,8 @@ def ensure_directories_exist():
 	# Removing all empty folders in Downloads directory
 	for (dirpath, dirnames, filenames) in walk(DIRECTORY_TO_MANAGE):
 		for dir_name in dirnames:
-			cur_path = '%s\\%s' % (dirpath, dir_name)
+			# cur_path = '%s\\%s' % (dirpath, dir_name)
+			cur_path = dirpath
 			os.chdir(cur_path)
 			if not os.listdir(cur_path):
 				print('%s is empty. Removing..' % dir_name)
@@ -57,13 +66,40 @@ def transfer_files():
 			"""
 			dest_folder = ''
 			if file.endswith(DIRS['Documents']):
-				dest_folder = 'Documents'
+				sub_folder = ''
+				if file.endswith(DIRS['Documents\\PDF']):
+					sub_folder = 'PDF'
+				if file.endswith(DIRS['Documents\\WordDocuments']):
+					sub_folder = 'WordDocuments'
+				elif file.endswith(DIRS['Documents\\Presentations']):
+					sub_folder = 'Presentations'
+				elif file.endswith(DIRS['Documents\\Spreadsheets']):
+					sub_folder = 'Spreadsheets'
+				elif file.endswith('txt'):
+					sub_folder = ''
+				if not sub_folder == '':
+					dest_folder = 'Documents\\%s' % sub_folder
+				else:
+					dest_folder = 'Documents'
 			elif file.endswith(DIRS['Music']):
 				dest_folder = 'Music'
 			elif file.endswith(DIRS['Video']):
 				dest_folder = 'Video'
 			elif file.endswith(DIRS['Programs']):
 				dest_folder = 'Programs'
+				sub_folder = ''
+				if file.endswith(DIRS['Programs\\Windows Application']):
+					sub_folder = 'Windows Application'
+				elif file.endswith(DIRS['Programs\\Windows Executables']):
+					sub_folder = 'Windows Executables'
+				elif file.endswith(DIRS['Programs\\Python']):
+					sub_folder = 'Python'
+				elif file.endswith(''):
+					sub_folder = 'Others'
+				if not sub_folder == '':
+					dest_folder = 'Programs\\%s' % sub_folder
+				else:
+					dest_folder = 'Programs'
 			elif file.endswith(DIRS['Compressed']):
 				dest_folder = 'Compressed'
 			elif file.endswith(DIRS['XMLFiles']):
